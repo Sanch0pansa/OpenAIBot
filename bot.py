@@ -178,7 +178,7 @@ def draw_command(message):
             # Отправляем изображение в чат
             bot.send_photo(chat_id=message.chat.id, photo=image_content)
     except Exception as e:
-        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.id, text="⚠ Что-то пошло не так с ботом...")
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.id, text=f"⚠ Что-то пошло не так с нейросетью...\n\n<b>{str(e)}</b>", parse_mode="HTML")
         return
 
     # Отправляем сообщение пользователю с его вводом
@@ -199,7 +199,7 @@ def echo_all(message):
         msgs = [
             {"role": "system", "content": "You are helpful assistant bot, that provides ability of using OpenAI services by Telegram Bot. Current date: 12.05.2020"}
         ]
-        msgs.extend(get_user_messages(message.chat.id))
+        msgs.extend(get_user_messages(message.chat.id)[::-1][:5][::-1])
         msgs.append({"role": "user", "content": message.text})
     except Exception as e:
         bot.edit_message_text(chat_id=message.chat.id, message_id=msg.id, text="⚠ Что-то пошло не так с базой данных...")
@@ -213,7 +213,8 @@ def echo_all(message):
                               text=format_code_blocks(resp),
                               parse_mode='HTML')
     except Exception as e:
-        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.id, text="⚠ Что-то пошло не так с ботом...")
+        print(e)
+        bot.edit_message_text(chat_id=message.chat.id, message_id=msg.id, text=f"⚠ Что-то пошло не так с нейросетью...\n\n<b>{str(e)}</b>", parse_mode="HTML")
         return
 
     # Сохранение сообщения пользователя и ответа бота в базу данных
